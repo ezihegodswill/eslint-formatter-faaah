@@ -1,0 +1,58 @@
+{
+  "name": "@ezihegodswill/eslint-plugin-console-faaah",
+  "version": "0.1.0",
+  "author": "Godswill Ezihe",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@types/bun": "^1.3.14",
+    "@types/eslint": "^8.56.0",
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@typescript-eslint/utils": "^7.0.0",
+    "eslint": "^8.56.0",
+    "simple-git-hooks": "^2.9.0",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "eslint": ">=8.0.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "description": "An ESLint plugin that detects console.log and plays a dynamically pitched, volume-scaled, and distorted 'faaah' sound based on error count.",
+  "files": [
+    "dist",
+    "assets",
+    "README.md"
+  ],
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "console.log",
+    "faaah",
+    "audio",
+    "dsp",
+    "mediabunny"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target node --format esm && mkdir -p ./dist/assets && cp -R ./assets/* ./dist/assets/ && tsc --emitDeclarationOnly --outDir ./dist",
+    "test": "bun test",
+    "lint": "eslint src/ --ext .ts",
+    "check-types": "tsc --noEmit -p tsconfig.test.json",
+    "prepare": "simple-git-hooks",
+    "changeset": "changeset"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "bun run check-types && bun test"
+  },
+  "type": "module",
+  "types": "./dist/index.d.ts"
+}
