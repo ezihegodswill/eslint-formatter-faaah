@@ -60,6 +60,18 @@ module.exports = {
 bunx eslint src/ -f @ezihegodswill/eslint-plugin-console-faaah/formatters/faaah
 ```
 
+### 🔕 Muting & CI Environment Controls
+
+Audio playback can be controlled using environment variables:
+
+| Environment Variable | Value | Description |
+| --- | --- | --- |
+| `FAAAH_DISABLE_AUDIO` | `true` / `1` | Mutes all audio playback. |
+| `CI` | `true` / `1` | Automatically mutes audio in continuous integration environments (e.g. GitHub Actions). |
+| `FAAAH_ENABLE_AUDIO` | `true` / `1` | Forces audio playback on even in CI environments. |
+
+> **Note:** During unit test execution (`NODE_ENV=test`) or CI builds (`CI=true`), audio playback is automatically muted by default so tests run quietly.
+
 ---
 
 ## 🛠️ Development & Testing

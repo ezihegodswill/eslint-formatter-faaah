@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'bun:test';
+import { describe, it, expect, afterEach } from 'bun:test';
 import { existsSync } from 'node:fs';
 import { getAudioSelectionForSeverity } from '../src/audio/player.js';
 
@@ -36,5 +36,35 @@ describe('Audio Subsystem & Severity Sound Selection', () => {
     expect(selection.severityType).toBe('error');
     expect(selection.name).toBe('Nawa For Yeauuuh Breauuuh');
     expect(selection.filePath).toContain('nawa-for-yeauhhhh-breauhhhh.mp3');
+  });
+
+  describe('Audio Muting & Environment Variable Controls', () => {
+    const originalEnv = { ...process.env };
+
+    afterEach(() => {
+      process.env = { ...originalEnv };
+    });
+
+    it('should disable audio when FAAAH_DISABLE_AUDIO is true', async () => {
+      const { isAudioDisabled } = await import(`../src/audio/player.js?t=${Date.now()}`);
+      process.env.FAAAH_DISABLE_AUDIO = 'true';
+      expect(isAudioDisabled()).toBe(true);
+    });
+
+    it('should disable audio when running in CI environment', async () => {
+      const { isAudioDisabled } = await import(`../src/audio/player.js?t=${Date.now()}`);
+      delete process.env.FAAAH_DISABLE_AUDIO;
+      delete process.env.FAAAH_ENABLE_AUDIO;
+      process.env.CI = 'true';
+      expect(isAudioDisabled()).toBe(true);
+    });
+
+    it('should allow forcing audio enabled via FAAAH_ENABLE_AUDIO', async () => {
+      const { isAudioDisabled } = await import(`../src/audio/player.js?t=${Date.now()}`);
+      delete process.env.FAAAH_DISABLE_AUDIO;
+      process.env.CI = 'true';
+      process.env.FAAAH_ENABLE_AUDIO = 'true';
+      expect(isAudioDisabled()).toBe(false);
+    });
   });
 });

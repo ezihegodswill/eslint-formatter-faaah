@@ -68,9 +68,33 @@ export function getAudioSelectionForSeverity(
 }
 
 /**
+ * Checks whether audio playback should be muted.
+ * Audio is muted if:
+ * - FAAAH_DISABLE_AUDIO is set to 'true' or '1'
+ * - Running in CI environment (CI=true or CI=1), unless FAAAH_ENABLE_AUDIO is set
+ * - Running in unit test environment (NODE_ENV=test), unless FAAAH_ENABLE_AUDIO is set
+ */
+export function isAudioDisabled(): boolean {
+  if (process.env.FAAAH_DISABLE_AUDIO === 'true' || process.env.FAAAH_DISABLE_AUDIO === '1') {
+    return true;
+  }
+  if (process.env.FAAAH_ENABLE_AUDIO === 'true' || process.env.FAAAH_ENABLE_AUDIO === '1') {
+    return false;
+  }
+  if (process.env.CI === 'true' || process.env.CI === '1' || process.env.NODE_ENV === 'test') {
+    return true;
+  }
+  return false;
+}
+
+/**
  * Plays an MP3 audio file asynchronously using native OS CLI players.
  */
 export function playAudioFile(filePath: string): void {
+  if (isAudioDisabled()) {
+    return;
+  }
+
   if (!existsSync(filePath)) {
     return;
   }
