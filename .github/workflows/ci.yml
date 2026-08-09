@@ -1,13 +1,14 @@
 name: CI Pipeline
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
+  push:
+    branches-ignore: [main]
 
 jobs:
   test-and-build:
+    name: Typecheck, Lint & Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Codebase
@@ -24,10 +25,15 @@ jobs:
       - name: Type Check
         run: bun run check-types
 
+      - name: Lint Codebase (ESLint)
+        run: bun run lint
+
       - name: Run Unit Tests
-        run: bun run test
+        run: bun test
         env:
           CI: true
+          FAAAH_DISABLE_AUDIO: true
 
       - name: Build Package Artifacts
         run: bun run build
+
