@@ -16,22 +16,13 @@ export interface AudioSelection {
  * Resolves the absolute path to an audio asset file.
  */
 export function resolveAudioPath(filename: string): string {
-  const candidates = [
-    join(__dirname, '../../assets/audio', filename),
-    join(__dirname, '../assets/audio', filename),
-    join(__dirname, './assets/audio', filename),
-    join(process.cwd(), 'assets/audio', filename),
-    join(process.cwd(), 'dist/assets/audio', filename),
-  ];
+  const primaryPath = join(__dirname, '../assets/audio', filename);
+  if (existsSync(primaryPath)) return primaryPath;
 
-  for (const candidate of candidates) {
-    if (existsSync(candidate)) {
-      return candidate;
-    }
-  }
+  const fallbackPath = join(process.cwd(), 'assets/audio', filename);
+  if (existsSync(fallbackPath)) return fallbackPath;
 
-  // Fallback to primary expected path
-  return join(process.cwd(), 'assets/audio', filename);
+  return primaryPath;
 }
 
 /**
@@ -68,34 +59,23 @@ export function getAudioSelectionForSeverity(
 }
 
 /**
- * Checks whether audio playback should be muted.
- * Audio is muted if:
- * - FAAAH_DISABLE_AUDIO is set to 'true' or '1'
- * - Running in CI environment (CI=true or CI=1), unless FAAAH_ENABLE_AUDIO is set
- * - Running in unit test environment (NODE_ENV=test), unless FAAAH_ENABLE_AUDIO is set
+ * Checks whether audio playback should be muted (e.g. in CI or test environments).
  */
 export function isAudioDisabled(): boolean {
-  if (process.env.FAAAH_DISABLE_AUDIO === 'true' || process.env.FAAAH_DISABLE_AUDIO === '1') {
-    return true;
-  }
-  if (process.env.FAAAH_ENABLE_AUDIO === 'true' || process.env.FAAAH_ENABLE_AUDIO === '1') {
-    return false;
-  }
-  if (process.env.CI === 'true' || process.env.CI === '1' || process.env.NODE_ENV === 'test') {
-    return true;
-  }
-  return false;
+  return (
+    process.env.FAAAH_DISABLE_AUDIO === 'true' ||
+    process.env.FAAAH_DISABLE_AUDIO === '1' ||
+    process.env.CI === 'true' ||
+    process.env.CI === '1' ||
+    process.env.NODE_ENV === 'test'
+  );
 }
 
 /**
  * Plays an MP3 audio file asynchronously using native OS CLI players.
  */
 export function playAudioFile(filePath: string): void {
-  if (isAudioDisabled()) {
-    return;
-  }
-
-  if (!existsSync(filePath)) {
+  if (isAudioDisabled() || !existsSync(filePath)) {
     return;
   }
 
@@ -120,15 +100,9 @@ export function playAudioFile(filePath: string): void {
   }
 
   try {
-    const child = spawn(command, args, {
-      stdio: 'ignore',
-      detached: false,
-    });
-
-    child.on('error', () => {
-      // Gracefully ignore audio player errors (e.g. missing audio device or CLI tool in CI)
-    });
-  } catch (e) {
+    const child = spawn(command, args, { stdio: 'ignore', detached: false });
+    child.on('error', () => {});
+  } catch {
     // Silent catch
   }
 }

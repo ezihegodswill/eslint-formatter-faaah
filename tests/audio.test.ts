@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from 'bun:test';
 import { existsSync } from 'node:fs';
-import { getAudioSelectionForSeverity } from '../src/audio/player.js';
+import { getAudioSelectionForSeverity, isAudioDisabled } from '../src/audio/player.js';
 
 describe('Audio Subsystem & Severity Sound Selection', () => {
   it('should select Anime Wow Sound for clean runs (0 errors, 0 warnings)', () => {
@@ -45,26 +45,15 @@ describe('Audio Subsystem & Severity Sound Selection', () => {
       process.env = { ...originalEnv };
     });
 
-    it('should disable audio when FAAAH_DISABLE_AUDIO is true', async () => {
-      const { isAudioDisabled } = await import(`../src/audio/player.js?t=${Date.now()}`);
+    it('should disable audio when FAAAH_DISABLE_AUDIO is true', () => {
       process.env.FAAAH_DISABLE_AUDIO = 'true';
       expect(isAudioDisabled()).toBe(true);
     });
 
-    it('should disable audio when running in CI environment', async () => {
-      const { isAudioDisabled } = await import(`../src/audio/player.js?t=${Date.now()}`);
+    it('should disable audio when running in CI environment', () => {
       delete process.env.FAAAH_DISABLE_AUDIO;
-      delete process.env.FAAAH_ENABLE_AUDIO;
       process.env.CI = 'true';
       expect(isAudioDisabled()).toBe(true);
-    });
-
-    it('should allow forcing audio enabled via FAAAH_ENABLE_AUDIO', async () => {
-      const { isAudioDisabled } = await import(`../src/audio/player.js?t=${Date.now()}`);
-      delete process.env.FAAAH_DISABLE_AUDIO;
-      process.env.CI = 'true';
-      process.env.FAAAH_ENABLE_AUDIO = 'true';
-      expect(isAudioDisabled()).toBe(false);
     });
   });
 });
