@@ -24,6 +24,18 @@ describe('Modern SoundPlayer Engine', () => {
     expect(available?.args('/path/test.mp3')).toEqual(['/path/test.mp3']);
   });
 
+  it('should reject invalid custom player names with shell characters', () => {
+    const player = new SoundPlayer({ player: 'custom; calc.exe' });
+    const available = player.findAvailablePlayer();
+
+    expect(available).toBeNull();
+  });
+
+  it('should allow stopping playback cleanly', () => {
+    const player = new SoundPlayer();
+    expect(() => player.stop()).not.toThrow();
+  });
+
   it('should return null when trying to play non-existent file', () => {
     const player = new SoundPlayer();
     const child = player.play('/non/existent/path/file.mp3');
@@ -31,3 +43,4 @@ describe('Modern SoundPlayer Engine', () => {
     expect(child).toBeNull();
   });
 });
+
