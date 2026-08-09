@@ -59,6 +59,9 @@
     "prepare": "simple-git-hooks",
     "changeset": "changeset"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "simple-git-hooks": {
     "pre-commit": "bun run check-types && bun test"
   },
