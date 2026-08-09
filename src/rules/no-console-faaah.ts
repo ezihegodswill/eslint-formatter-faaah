@@ -10,12 +10,12 @@ export const noConsoleFaaahRule: RuleModule<MessageIds, Options> = {
     type: 'problem',
     docs: {
       description:
-        'Disallow console.log statements and trigger dynamic FAAAH audio penalty scaled by error count.',
+        'Disallow console.log statements and trigger audio sound penalty.',
     },
     schema: [],
     messages: {
       noConsoleFaaah:
-        "Unexpected console.log statement found! Penalizing codebase with dynamic 'faaah' audio scaling.",
+        "Unexpected console.log statement found! Penalizing codebase with 'faaah' audio effect.",
     },
   },
   defaultOptions: [],

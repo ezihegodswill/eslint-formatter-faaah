@@ -22,7 +22,7 @@ ruleTester.run('no-console-faaah', noConsoleFaaahRule as any, {
       code: 'console.log("Hello world");',
       errors: [
         {
-          message: "Unexpected console.log statement found! Penalizing codebase with dynamic 'faaah' audio scaling.",
+          messageId: 'noConsoleFaaah',
         },
       ],
     },
@@ -30,7 +30,7 @@ ruleTester.run('no-console-faaah', noConsoleFaaahRule as any, {
       code: 'function debug() { console.log("Debugging..."); }',
       errors: [
         {
-          message: "Unexpected console.log statement found! Penalizing codebase with dynamic 'faaah' audio scaling.",
+          messageId: 'noConsoleFaaah',
         },
       ],
     },
