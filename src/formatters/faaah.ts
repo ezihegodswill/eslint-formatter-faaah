@@ -1,23 +1,20 @@
 import type { ESLint } from 'eslint';
-import { getAudioSelectionForSeverity, playAudioFile } from '../audio/player.js';
+import { getAudioSelection, playAudioFile } from '../audio/player.js';
 
 /**
  * Custom ESLint Formatter: 'faaah'
- * Aggregates error/warning severity counts, plays corresponding MP3 audio effect,
+ * Aggregates total problem counts, plays corresponding 'faaah' audio effect on violations,
  * and formats CLI output with ANSI styling.
  */
 export default async function faaahFormatter(
   results: ESLint.LintResult[],
   _context?: ESLint.LintResultData
 ): Promise<string> {
-  let totalErrors = 0;
-  let totalWarnings = 0;
-
+  let totalProblems = 0;
   const lines: string[] = [];
 
   for (const result of results) {
-    totalErrors += result.errorCount;
-    totalWarnings += result.warningCount;
+    totalProblems += result.errorCount + result.warningCount;
 
     if (result.messages.length === 0) continue;
 
@@ -36,47 +33,40 @@ export default async function faaahFormatter(
   }
 
   // Summary line
-  if (totalErrors > 0 || totalWarnings > 0) {
-    const errText = `${totalErrors} ${totalErrors === 1 ? 'error' : 'errors'}`;
-    const warnText = `${totalWarnings} ${totalWarnings === 1 ? 'warning' : 'warnings'}`;
-    lines.push(`\x1b[31m\x1b[1m✖ ${totalErrors + totalWarnings} problems (${errText}, ${warnText})\x1b[0m`);
+  if (totalProblems > 0) {
+    const issueText = totalProblems === 1 ? 'problem' : 'problems';
+    lines.push(`\x1b[31m\x1b[1m✖ ${totalProblems} ${issueText} found\x1b[0m`);
   }
 
-  // Select sound effect based on severity
-  const audioSelection = getAudioSelectionForSeverity(totalErrors, totalWarnings);
+  // Select sound effect based on total problems
+  const audioSelection = getAudioSelection(totalProblems);
 
-  // Trigger audio playback side effect
-  playAudioFile(audioSelection.filePath);
+  // Trigger audio playback side effect if sound is selected
+  if (audioSelection.filePath) {
+    playAudioFile(audioSelection.filePath);
+  }
 
   // Format ANSI status card
   const green = '\x1b[32m';
-  const yellow = '\x1b[33m';
   const red = '\x1b[31m';
   const bold = '\x1b[1m';
   const reset = '\x1b[0m';
 
-  let borderColor = green;
-  let statusTitle = '  ✨ CLEAN CODEBASE - NO ISSUES FOUND!';
-  let soundIcon = '🎉';
-
-  if (audioSelection.severityType === 'error') {
-    borderColor = red;
-    statusTitle = '  🚨 CONSOLE ERROR(S) DETECTED!       ';
-    soundIcon = '💥';
-  } else if (audioSelection.severityType === 'warning') {
-    borderColor = yellow;
-    statusTitle = '  ⚠️  CONSOLE WARNING(S) DETECTED!     ';
-    soundIcon = '🔊';
-  }
+  const hasIssues = totalProblems > 0;
+  const borderColor = hasIssues ? red : green;
+  const rawTitle = hasIssues
+    ? '  🚨 CONSOLE STATEMENT(S) DETECTED!'
+    : '  ✨ CLEAN CODEBASE - NO ISSUES FOUND!';
+  const statusTitle = rawTitle.padEnd(54, ' ');
+  const activeSoundText = hasIssues ? `${audioSelection.name} 💥` : audioSelection.name;
 
   const audioSummaryBanner = [
     '',
     `${borderColor}${bold}┌──────────────────────────────────────────────────────────┐${reset}`,
-    `${borderColor}${bold}│ ${statusTitle}          │${reset}`,
+    `${borderColor}${bold}│ ${statusTitle} │${reset}`,
     `${borderColor}${bold}├──────────────────────────────────────────────────────────┤${reset}`,
-    `${borderColor}${bold}│${reset}  Total Errors       : ${bold}${totalErrors}${reset}`,
-    `${borderColor}${bold}│${reset}  Total Warnings     : ${bold}${totalWarnings}${reset}`,
-    `${borderColor}${bold}│${reset}  Active Sound       : ${bold}${audioSelection.name} ${soundIcon}${reset}`,
+    `${borderColor}${bold}│${reset}  Total Problems     : ${bold}${totalProblems}${reset}`,
+    `${borderColor}${bold}│${reset}  Active Sound       : ${bold}${activeSoundText}${reset}`,
     `${borderColor}${bold}└──────────────────────────────────────────────────────────┘${reset}`,
     '',
   ].join('\n');
@@ -84,3 +74,4 @@ export default async function faaahFormatter(
   const body = lines.join('\n');
   return body + audioSummaryBanner;
 }
+
