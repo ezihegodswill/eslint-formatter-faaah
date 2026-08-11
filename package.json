@@ -1,6 +1,6 @@
 {
   "name": "@ezihegodswill/eslint-plugin-console-faaah",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Godswill Ezihe",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
