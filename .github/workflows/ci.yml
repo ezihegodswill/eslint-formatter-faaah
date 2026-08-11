@@ -28,12 +28,12 @@ jobs:
       - name: Lint Codebase (ESLint)
         run: bun run lint
 
+      - name: Build Package Artifacts
+        run: bun run build
+
       - name: Run Unit Tests
         run: bun test
         env:
           CI: true
           FAAAH_DISABLE_AUDIO: true
-
-      - name: Build Package Artifacts
-        run: bun run build
 
