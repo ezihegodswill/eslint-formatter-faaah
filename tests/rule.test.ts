@@ -24,6 +24,10 @@ ruleTester.run('no-console-faaah', noConsoleFaaahRule as any, {
       code: 'console.trace("This trace is ignored");',
       options: [{ ignore: ['trace'] }],
     },
+    { code: 'function test(console: any) { console.log("allowed"); }' },
+    { code: 'const console = { log: (msg: string) => msg }; console.log("custom");' },
+    { code: 'const fn = (console: any) => console.log("param");' },
+    { code: 'try {} catch (console: any) { console.log("error"); }' },
   ],
   invalid: [
     {
