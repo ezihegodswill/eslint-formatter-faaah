@@ -1,7 +1,10 @@
-name: Release & Publish
+name: CI/CD Pipeline
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
@@ -15,8 +18,46 @@ permissions:
   id-token: write
 
 jobs:
+  test-and-build:
+    name: Typecheck, Lint, Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Setup Bun Runtime
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Type Check
+        run: bun run check-types
+
+      - name: Lint Codebase (ESLint)
+        run: bun run lint
+
+      - name: Build Package Artifacts
+        run: bun run build
+
+      - name: Run Test Suite
+        run: bun test
+        env:
+          CI: true
+
   release:
-    name: Build, Test & Publish
+    name: Release & Publish to NPM
+    needs: test-and-build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
@@ -33,23 +74,11 @@ jobs:
       - name: Setup Node.js (for NPM Registry Auth)
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           registry-url: "https://registry.npmjs.org"
 
       - name: Install Dependencies
         run: bun install --frozen-lockfile
-
-      - name: Typecheck
-        run: bun run check-types
-
-      - name: Lint Codebase (ESLint)
-        run: bun run lint
-
-      - name: Run Test Suite
-        run: bun test
-        env:
-          CI: true
-          FAAAH_DISABLE_AUDIO: true
 
       - name: Build Package Artifacts
         run: bun run build
@@ -64,3 +93,4 @@ jobs:
           title: "chore: version package"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
