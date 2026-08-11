@@ -58,8 +58,8 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: bunx changeset publish
-          version: bunx changeset version
+          publish: npx changeset publish
+          version: npx changeset version
           commit: "chore: version package"
           title: "chore: version package"
         env:

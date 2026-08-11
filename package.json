@@ -59,8 +59,13 @@
     "prepare": "simple-git-hooks",
     "changeset": "changeset"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ezihegodswill/eslint-plugin-console-faaah.git"
+  },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "simple-git-hooks": {
     "pre-commit": "bun run check-types && bun test"
