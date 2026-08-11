@@ -50,13 +50,28 @@ export const noConsoleFaaahRule: RuleModule<MessageIds, Options> = {
       return null;
     }
 
+    function isGlobalConsole(node: any): boolean {
+      let scope = context.sourceCode ? context.sourceCode.getScope(node) : (context as any).getScope();
+      while (scope) {
+        const variable = scope.set.get('console');
+        if (variable) {
+          if (variable.defs && variable.defs.length > 0) {
+            return false;
+          }
+        }
+        scope = scope.upper;
+      }
+      return true;
+    }
+
     return {
       CallExpression(node) {
         const callee = node.callee;
         if (
           callee.type === 'MemberExpression' &&
           callee.object.type === 'Identifier' &&
-          callee.object.name === 'console'
+          callee.object.name === 'console' &&
+          isGlobalConsole(callee.object)
         ) {
           const propName = getPropertyName(callee);
           if (propName) {
@@ -69,11 +84,19 @@ export const noConsoleFaaahRule: RuleModule<MessageIds, Options> = {
                 node,
                 messageId: 'noConsoleFaaah',
                 fix(fixer) {
-                  const targetNode =
-                    node.parent && node.parent.type === 'ExpressionStatement'
-                      ? node.parent
-                      : node;
-                  return fixer.remove(targetNode as any);
+                  if (node.parent && node.parent.type === 'ExpressionStatement') {
+                    const grandParent = node.parent.parent;
+                    if (
+                      grandParent &&
+                      (grandParent.type === 'BlockStatement' ||
+                        grandParent.type === 'Program' ||
+                        grandParent.type === 'SwitchCase')
+                    ) {
+                      return fixer.remove(node.parent as any);
+                    }
+                    return fixer.replaceText(node.parent as any, '{}');
+                  }
+                  return fixer.replaceText(node as any, 'void 0');
                 },
               });
             }
