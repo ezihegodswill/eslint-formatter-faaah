@@ -64,8 +64,7 @@
     "url": "git+https://github.com/ezihegodswill/eslint-plugin-console-faaah.git"
   },
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "simple-git-hooks": {
     "pre-commit": "bun run check-types && bun test"
