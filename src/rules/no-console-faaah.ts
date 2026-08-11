@@ -84,11 +84,19 @@ export const noConsoleFaaahRule: RuleModule<MessageIds, Options> = {
                 node,
                 messageId: 'noConsoleFaaah',
                 fix(fixer) {
-                  const targetNode =
-                    node.parent && node.parent.type === 'ExpressionStatement'
-                      ? node.parent
-                      : node;
-                  return fixer.remove(targetNode as any);
+                  if (node.parent && node.parent.type === 'ExpressionStatement') {
+                    const grandParent = node.parent.parent;
+                    if (
+                      grandParent &&
+                      (grandParent.type === 'BlockStatement' ||
+                        grandParent.type === 'Program' ||
+                        grandParent.type === 'SwitchCase')
+                    ) {
+                      return fixer.remove(node.parent as any);
+                    }
+                    return fixer.replaceText(node.parent as any, '{}');
+                  }
+                  return fixer.replaceText(node as any, 'void 0');
                 },
               });
             }

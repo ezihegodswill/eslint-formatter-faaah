@@ -75,6 +75,46 @@ ruleTester.run('no-console-faaah', noConsoleFaaahRule as any, {
         },
       ],
     },
+    {
+      code: 'if (cond) console.log("x");',
+      output: 'if (cond) {}',
+      errors: [{ messageId: 'noConsoleFaaah' }],
+    },
+    {
+      code: 'while (cond) console.log("x");',
+      output: 'while (cond) {}',
+      errors: [{ messageId: 'noConsoleFaaah' }],
+    },
+    {
+      code: 'for (let i = 0; i < 10; i++) console.log(i);',
+      output: 'for (let i = 0; i < 10; i++) {}',
+      errors: [{ messageId: 'noConsoleFaaah' }],
+    },
+    {
+      code: 'do console.log("x"); while (cond);',
+      output: 'do {} while (cond);',
+      errors: [{ messageId: 'noConsoleFaaah' }],
+    },
+    {
+      code: 'const x = console.log();',
+      output: 'const x = void 0;',
+      errors: [{ messageId: 'noConsoleFaaah' }],
+    },
+    {
+      code: 'const f = () => console.log();',
+      output: 'const f = () => void 0;',
+      errors: [{ messageId: 'noConsoleFaaah' }],
+    },
+    {
+      code: '(console.log(), 42);',
+      output: '(void 0, 42);',
+      errors: [{ messageId: 'noConsoleFaaah' }],
+    },
+    {
+      code: 'function res() { return console.log(); }',
+      output: 'function res() { return void 0; }',
+      errors: [{ messageId: 'noConsoleFaaah' }],
+    },
   ],
 });
 
