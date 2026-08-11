@@ -62,4 +62,27 @@ describe('Custom faaah ESLint Formatter', () => {
     expect(plainTextOutput).toContain('Total Problems     : 2');
     expect(plainTextOutput).toContain('Active Sound       : Faaah Sound 💥');
   });
+
+  it('should successfully import and execute the compiled build artifact from dist/formatters/faaah.js', async () => {
+    const { existsSync } = await import('fs');
+    const { execSync } = await import('child_process');
+    const { resolve, dirname } = await import('path');
+    const { fileURLToPath } = await import('url');
+
+    const currentDir = typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url));
+    const distPath = resolve(currentDir, '../dist/formatters/faaah.js');
+
+    if (!existsSync(distPath)) {
+      execSync('bun run build', { stdio: 'ignore' });
+    }
+
+    // @ts-ignore - dynamic import of compiled artifact
+    const compiledFormatterModule = await import('../dist/formatters/faaah.js');
+    const compiledFormatter = compiledFormatterModule.default;
+    expect(typeof compiledFormatter).toBe('function');
+
+    const output = await compiledFormatter([]);
+    const plainTextOutput = output.replace(/\u001b\[\d+m/g, '');
+    expect(plainTextOutput).toContain('CLEAN CODEBASE');
+  });
 });

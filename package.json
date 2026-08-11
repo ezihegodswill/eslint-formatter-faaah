@@ -52,7 +52,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "bun build ./src/index.ts ./src/bin/console-faaah.ts --outdir ./dist --target node --format esm && chmod +x ./dist/bin/console-faaah.js && mkdir -p ./dist/assets && cp -R ./assets/* ./dist/assets/ && tsc --emitDeclarationOnly --outDir ./dist",
+    "build": "bun build ./src/index.ts ./src/formatters/faaah.ts ./src/bin/console-faaah.ts --outdir ./dist --target node --format esm && chmod +x ./dist/bin/console-faaah.js && mkdir -p ./dist/assets && cp -R ./assets/* ./dist/assets/ && tsc --emitDeclarationOnly --outDir ./dist",
     "test": "bun test",
     "lint": "eslint src/",
     "check-types": "tsc --noEmit -p tsconfig.test.json",
