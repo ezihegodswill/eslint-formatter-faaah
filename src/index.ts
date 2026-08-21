@@ -25,11 +25,6 @@ export function isSoundDisabled(): boolean {
   }
 }
 
-/**
- * Custom ESLint Formatter: @ezihegodswill/eslint-formatter-faaah
- * Delegates CLI text formatting to ESLint's builtin 'stylish' formatter,
- * while conditionally playing a signature sound effect when errors or warnings exist.
- */
 export default async function faaahFormatter(
   results: ESLint.LintResult[],
   context?: ESLint.LintResultData,
