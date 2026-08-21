@@ -6,16 +6,16 @@ Whenever ESLint encounters lint errors or warnings in your project, `@ezihegodsw
 
 ---
 
-## ✨ Features
+## Features
 
-- 📢 **Audio Feedback**: Triggers sound playback when `errorCount > 0` or `warningCount > 0`.
-- 🎨 **Delegated `stylish` Output**: 100% authentic ESLint formatting using ESLint's built-in `stylish` CLI formatter.
-- 🔕 **Environment Controls**: Mute audio anytime using `DISABLE_SOUND=true` or automatic CI detection (`CI=true`).
-- ⚡ **Fast & Lightweight**: Zero external CLI binary dependencies; powered natively across macOS, Linux, and Windows via `@ezihegodswill/native-audio-player`.
+- **Audio Feedback**: Triggers sound playback when `errorCount > 0` or `warningCount > 0`.
+- **Delegated `stylish` Output**: 100% authentic ESLint formatting using ESLint's built-in `stylish` CLI formatter.
+- **Environment Controls**: Mute audio anytime using `DISABLE_SOUND=true` or automatic CI detection (`CI=true`).
+- **Fast & Lightweight**: Zero external CLI binary dependencies; powered natively across macOS, Linux, and Windows via `@ezihegodswill/native-audio-player`.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -34,7 +34,7 @@ pnpm add -D @ezihegodswill/eslint-formatter-faaah
 
 ---
 
-## 💻 Usage
+## Usage
 
 ### 1. ESLint CLI (`--formatter`)
 
@@ -68,7 +68,7 @@ bun run lint
 
 ---
 
-## 🔕 Muting & CI Environment Controls
+## Muting & CI Environment Controls
 
 Audio playback can be disabled anytime using environment variables:
 
@@ -85,23 +85,7 @@ DISABLE_SOUND=true bunx eslint -f @ezihegodswill/eslint-formatter-faaah .
 
 ---
 
-## 📜 System Architecture
-
-```mermaid
-flowchart TD
-    A[ESLint CLI Execution] --> B[@ezihegodswill/eslint-formatter-faaah / src/index.ts]
-    B --> C{errorCount > 0 OR warningCount > 0?}
-    C -->|Yes| D{DISABLE_SOUND OR CI active?}
-    C -->|No| F[Load ESLint stylish Formatter]
-    D -->|No| E[Play assets/faaah.wav via @ezihegodswill/native-audio-player]
-    D -->|Yes| F
-    E --> F
-    F --> G[Return stylish formatted output to stdout]
-```
-
----
-
-## 🛠️ Development & Testing
+## Development & Testing
 
 ```bash
 # Typecheck TypeScript code
@@ -119,6 +103,6 @@ bun run changeset
 
 ---
 
-## 📄 License
+## License
 
 MIT © [Godswill Ezihe](https://github.com/ezihegodswill)
