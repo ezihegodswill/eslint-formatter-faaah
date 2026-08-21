@@ -1,5 +1,11 @@
 # eslint-formatter-faaah
 
+## 0.1.2
+
+### Patch Changes
+
+- 772c104: Refactor CI workflow to use conventional commits pattern for release PRs, update documentation, and clean up source JSDoc comments.
+
 ## 0.1.1
 
 ### Patch Changes
