@@ -5,8 +5,8 @@
     "moduleResolution": "NodeNext",
     "lib": ["ES2022", "DOM"],
     "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
+    "declarationMap": false,
+    "sourceMap": false,
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -24,5 +24,5 @@
     "types": ["bun"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "tests"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
