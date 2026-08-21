@@ -1,6 +1,6 @@
 {
   "name": "@ezihegodswill/eslint-formatter-faaah",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A custom ESLint formatter that plays a signature sound effect when errors or warnings exist.",
   "author": "Godswill Ezihe",
   "license": "MIT",
