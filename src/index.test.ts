@@ -10,7 +10,7 @@ mock.module("@ezihegodswill/native-audio-player", () => ({
   playAudio: mockPlayAudio,
 }));
 
-describe("eslint-formatter-faaah", () => {
+describe("@ezihegodswill/eslint-formatter-faaah", () => {
   const originalDisableSound = process.env.DISABLE_SOUND;
   const originalCI = process.env.CI;
 

@@ -1,8 +1,8 @@
-# `eslint-formatter-faaah`
+# `@ezihegodswill/eslint-formatter-faaah`
 
 An audio-interactive custom ESLint formatter built using **Bun**, **TypeScript**, and **`@ezihegodswill/native-audio-player`**.
 
-Whenever ESLint encounters lint errors or warnings in your project, `eslint-formatter-faaah` plays a signature **"Faaah"** sound effect while delegating standard text output directly to ESLint's native `stylish` formatter.
+Whenever ESLint encounters lint errors or warnings in your project, `@ezihegodswill/eslint-formatter-faaah` plays a signature **"Faaah"** sound effect while delegating standard text output directly to ESLint's native `stylish` formatter.
 
 ---
 
@@ -19,17 +19,17 @@ Whenever ESLint encounters lint errors or warnings in your project, `eslint-form
 
 ### Installation
 
-Install `eslint-formatter-faaah` as a dev dependency in your project:
+Install `@ezihegodswill/eslint-formatter-faaah` as a dev dependency in your project:
 
 ```bash
 # Using Bun
-bun add -d eslint-formatter-faaah
+bun add -d @ezihegodswill/eslint-formatter-faaah
 
 # Using npm
-npm install --save-dev eslint-formatter-faaah
+npm install --save-dev @ezihegodswill/eslint-formatter-faaah
 
 # Using pnpm
-pnpm add -D eslint-formatter-faaah
+pnpm add -D @ezihegodswill/eslint-formatter-faaah
 ```
 
 ---
@@ -38,14 +38,14 @@ pnpm add -D eslint-formatter-faaah
 
 ### 1. ESLint CLI (`--formatter`)
 
-Pass `faaah` to ESLint's `-f` / `--formatter` flag:
+Pass `@ezihegodswill/eslint-formatter-faaah` (or `@ezihegodswill/faaah`) to ESLint's `-f` / `--formatter` flag:
 
 ```bash
 # Using npx
-npx eslint --formatter faaah .
+npx eslint --formatter @ezihegodswill/eslint-formatter-faaah .
 
 # Using Bun
-bunx eslint -f faaah src/
+bunx eslint -f @ezihegodswill/eslint-formatter-faaah src/
 ```
 
 ### 2. Package.json Script
@@ -55,7 +55,7 @@ Add a lint script to your `package.json`:
 ```json
 {
   "scripts": {
-    "lint": "eslint --formatter faaah ."
+    "lint": "eslint --formatter @ezihegodswill/eslint-formatter-faaah ."
   }
 }
 ```
@@ -80,7 +80,7 @@ Audio playback can be disabled anytime using environment variables:
 Example local mute run:
 
 ```bash
-DISABLE_SOUND=true bunx eslint -f faaah .
+DISABLE_SOUND=true bunx eslint -f @ezihegodswill/eslint-formatter-faaah .
 ```
 
 ---
@@ -89,7 +89,7 @@ DISABLE_SOUND=true bunx eslint -f faaah .
 
 ```mermaid
 flowchart TD
-    A[ESLint CLI Execution] --> B[eslint-formatter-faaah / src/index.ts]
+    A[ESLint CLI Execution] --> B[@ezihegodswill/eslint-formatter-faaah / src/index.ts]
     B --> C{errorCount > 0 OR warningCount > 0?}
     C -->|Yes| D{DISABLE_SOUND OR CI active?}
     C -->|No| F[Load ESLint stylish Formatter]
@@ -104,7 +104,7 @@ flowchart TD
 ## 🛠️ Development & Testing
 
 ```bash
-# Typecheck TypeScript code across src/ and tests/
+# Typecheck TypeScript code
 bun run check-types
 
 # Run unit tests with mocked audio player
