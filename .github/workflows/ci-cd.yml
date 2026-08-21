@@ -1,10 +1,10 @@
 name: CI/CD Pipeline
 
 on:
-  push:
+  pull_request:
     branches:
       - main
-  pull_request:
+  push:
     branches:
       - main
 
@@ -12,85 +12,65 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: write
-  pull-requests: write
-  id-token: write
-
 jobs:
   test-and-build:
-    name: Typecheck, Lint, Build & Test
+    name: Verify & Build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Codebase
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Bun Runtime
+      - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
-      - name: Setup Node.js Runtime
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          registry-url: "https://registry.npmjs.org"
-
-      - name: Install Dependencies
+      - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Type Check
+      - name: Typecheck TypeScript
         run: bun run check-types
 
-      - name: Lint Codebase (ESLint)
-        run: bun run lint
+      - name: Run unit tests
+        run: bun test
 
-      - name: Build Package Artifacts
+      - name: Build package
         run: bun run build
 
-      - name: Run Test Suite
-        run: bun test
-        env:
-          CI: true
-
   release:
-    name: Release & Publish to NPM
+    name: Release & Publish
     needs: test-and-build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Bun Runtime
+      - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
-      - name: Setup Node.js (for NPM Registry Auth)
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          registry-url: "https://registry.npmjs.org"
-
-      - name: Install Dependencies
+      - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Build Package Artifacts
+      - name: Typecheck TypeScript
+        run: bun run check-types
+
+      - name: Run unit tests
+        run: bun test
+
+      - name: Build package
         run: bun run build
 
-      - name: Create Release Pull Request or Publish to NPM
-        id: changesets
+      - name: Create Release PR or Publish to NPM
         uses: changesets/action@v1
         with:
-          publish: npx changeset publish
-          version: npx changeset version
-          commit: "chore: version package"
-          title: "chore: version package"
+          publish: bunx changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
